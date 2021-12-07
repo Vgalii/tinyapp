@@ -39,6 +39,10 @@ app.get("/urls.json", (req, res) => {
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(`http://${longURL}`);
+});
 function generateRandomString () {
   const result = Math.random().toString(36).substring(2,8);
   return result;
