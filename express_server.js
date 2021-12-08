@@ -39,6 +39,12 @@ app.get("/urls.json", (req, res) => {
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+app.post("/urls/:shortURL/edit", (req, res) => {
+  let longURL = req.body.longURL;
+  let shortUrl = req.params.shortURL;
+  urlDatabase[shortUrl] = longURL;
+  res.redirect("/urls/")
+})
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(`http://${longURL}`);
