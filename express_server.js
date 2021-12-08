@@ -14,12 +14,17 @@ const urlDatabase = {
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
-
+// login
 app.post("/login", (req, res) => {
   
   res.cookie("username", req.body["username"]);
   res.redirect("/urls");
   console.log(username)
+})
+// logout
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls");
 })
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
