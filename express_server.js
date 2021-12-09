@@ -50,13 +50,23 @@ app.post("/register", (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
-  users[id] = {
-    "id": id,
-    email,
-    password
-  };
-  res.cookie("user_id", id);
-  res.redirect("/urls");
+  const user = findUserByEmail(email, users);
+  console.log(user);
+  if(!email || !password){
+    res.status(400).send('Error 400 - The request you made is incorrect!');
+    return;
+  }
+  if (!user) {
+    users[id] = {
+      "id": id,
+      email,
+      password
+    };
+    res.cookie("user_id", id);
+    res.redirect("/urls");
+    return;
+}
+res.status(400).send('Error 400 - The request you made is incorrect!'); 
 
 })
 app.get("/urls", (req, res) => {
@@ -111,6 +121,18 @@ function generateRandomString () {
   const result = Math.random().toString(36).substring(2,8);
   return result;
 }
+const findUserByEmail = (email, db) => {
+  for (let userId in db) {
+    const user = db[userId]; // => retrieve the value
+
+    if (user.email === email) {
+      return user;
+    }
+  }
+
+  return false;
+};
+
 
 
 app.listen(PORT, () => {
