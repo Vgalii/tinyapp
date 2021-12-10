@@ -15,7 +15,9 @@ app.set("view engine", "ejs");
 
 
 app.use(bodyParser.urlencoded({extended: true}));
+
 //Database
+
 const urlDatabase = {
   "b2xVn2": {longURL: "http://www.lighthouselabs.ca", user_id:"aJ48lW"},
   "9sm5xK": {longURL: "http://www.google.com", user_id:"3ik5g3"}
@@ -34,6 +36,7 @@ const users = {
 }
 
 ///Helper functions
+
 const { getUserByEmail } = require('./helpers');
 function generateRandomString () {
   const result = Math.random().toString(36).substring(2,8);
@@ -54,7 +57,7 @@ const checkURLByUser = function(user_id, urlDatabase) {
   }
   return urlObject;
 }
-
+//ROUTS
 app.get("/", (req, res) => {
   
   const user = checkByCookie(req);
@@ -112,6 +115,7 @@ app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/urls");
 })
+
 // register
 app.get("/register", (req, res) => {
   
@@ -139,6 +143,7 @@ app.post("/register", (req, res) => {
     console.log(users[id]);
   }
 })
+// URLs
 app.get("/urls", (req, res) => {
   
   
