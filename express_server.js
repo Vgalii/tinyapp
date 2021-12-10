@@ -177,18 +177,53 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.post("/urls/:shortURL/edit", (req, res) => {
-  let longURL = req.body.longURL;
-  let shortUrl = req.params.shortURL;
-  urlDatabase[shortUrl].longURL = longURL;
-  res.redirect("/urls/")
+  const user_id = req.cookies.user_id;
+  const user = checkByCookie(req);
+  const shortURL = req.params.shortURL;
+  const longURL = req.body.longURL;
+  const userURLs = checkURLByUser(user_id, urlDatabase);
+
+  if (user) {
+    if (userURLs[shortURL]){
+    urlDatabase[shortURL].longURL = longURL;
+    res.redirect("/urls/");
+    return;
+    } else {
+      res.redirect(403, "/login");
+      return;
+    }
+    
+  } else {
+    res.redirect(403, "/login");
+    return;
+  }
+  
 })
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(`http://${longURL["longURL"]}`);
 });
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  // delete urlDatabase[req.params.shortURL];
+  // res.redirect("/urls");
+  const user_id = req.cookies.user_id;
+  const user = checkByCookie(req);
+  const shortURL = req.params.shortURL;
+  const userURLs = checkURLByUser(user_id, urlDatabase);
+  if (user) {
+    
+    if (userURLs[shortURL]){
+      delete urlDatabase[shortURL];
+      res.redirect("/urls");
+      return;
+    } else {
+      res.redirect(403, "/login");
+      return;
+    }
+  } else {
+    res.redirect(403, "/login");
+    return;
+  }
 })
 
 
