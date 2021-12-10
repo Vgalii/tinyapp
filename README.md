@@ -4,11 +4,11 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["TinyApp"]([https://github.com/Vgalii/tinyapp/blob/master/docs/main_page.png?raw=true])
+!["TinyApp"](https://github.com/Vgalii/tinyapp/blob/master/docs/main_page.png?raw=true)
 
-!["TinyApp will keep all your favourite links"]([https://github.com/Vgalii/tinyapp/blob/master/docs/urls.png?raw=true])
+!["TinyApp will keep all your favourite links"](https://github.com/Vgalii/tinyapp/blob/master/docs/urls.png?raw=true)
 
-!["Easy to update"]([https://github.com/Vgalii/tinyapp/blob/master/docs/urls:new.png?raw=true])
+!["Easy to update"](https://github.com/Vgalii/tinyapp/blob/master/docs/urls:new.png?raw=true)
 
 ## Dependencies
 
