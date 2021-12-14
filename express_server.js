@@ -58,6 +58,7 @@ const checkURLByUser = function(user_id, urlDatabase) {
   return urlObject;
 };
 //ROUTS
+// redirects the existing user to /urls, or to /login if he/she is not logged in
 app.get("/", (req, res) => {
   const user_id = req.session.user_id;
   const user = checkByCookie(req);
@@ -81,10 +82,10 @@ app.post("/", (req, res) => {
 
 // login
 app.post("/login", (req, res) => {
-  const email = req.body.email;
+  const email = req.body.email; // gets the user's info from req.body
   const password = req.body.password;
  
-  const user = getUserByEmail(email, users);
+  const user = getUserByEmail(email, users); // verifies the user
   if (!email || !password) {
     res.redirect(401, '/login');
   } else if (user) {
@@ -93,7 +94,7 @@ app.post("/login", (req, res) => {
     if (bcrypt.compareSync(password, hashedPassword)) {
       
       req.session.user_id = id;
-      res.redirect('/urls');
+      res.redirect('/urls'); // redirects the existing user to /urls
     } else {
       res.redirect(403, '/login');
     }
@@ -115,6 +116,7 @@ app.get("/login", (req, res) => {
   }
 });
 // logout
+// logs the user out and redirects to the login page
 app.post("/logout", (req, res) => {
   
   req.session = null;
@@ -122,6 +124,7 @@ app.post("/logout", (req, res) => {
 });
 
 // register
+// renders the register form if the user is not in DB
 app.get("/register", (req, res) => {
   
   const user_id = req.session.user_id;
@@ -133,6 +136,8 @@ app.get("/register", (req, res) => {
   }
   
 });
+
+//creates a new user in DB if he/she is not registered yet
 app.post("/register", (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
@@ -186,6 +191,8 @@ app.post("/urls", (req, res) => {
   
   res.redirect(`/urls/${shortURL}`);
 });
+
+//renders /urls_show if the user is logged in and owns the url
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const user_id = req.session.user_id;
@@ -198,7 +205,7 @@ app.get("/urls/:shortURL", (req, res) => {
         const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[user]};
         res.render("urls_show", templateVars);
         return;
-      } else {
+      } else { 
         res.redirect(403, "/login");
         return;
       }
@@ -207,7 +214,8 @@ app.get("/urls/:shortURL", (req, res) => {
       return;
     }
   }
-  res.redirect(403, "/login");
+  // res.redirect(403, "/login");
+  res.send("Sorry, you do not own this URL.")
   return;
 });
 app.post("/urls/:shortURL", (req, res) => {
@@ -250,6 +258,8 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(`http://${longURL["longURL"]}`);
 });
+
+//deletes the url if the user is logged in and owns it
 app.post("/urls/:shortURL/delete", (req, res) => {
   
   const user_id = req.session.user_id;
@@ -263,10 +273,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
       res.redirect("/urls");
       return;
     } else {
-      res.redirect(403, "/login");
+      res.redirect(403, "/login");  
       return;
     }
-  } else {
+  } else {        // if not a registered user => error message
     res.redirect(403, "/login");
     return;
   }
