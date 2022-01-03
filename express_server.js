@@ -61,6 +61,7 @@ const checkURLByUser = function(user_id, urlDatabase) {
 // redirects the existing user to /urls, or to /login if he/she is not logged in
 app.get("/", (req, res) => {
   const user_id = req.session.user_id;
+  res.clearCookie(user_id)
   const user = checkByCookie(req);
   if (user) {
     const userURLs = checkURLByUser(user_id, urlDatabase);
@@ -108,8 +109,9 @@ app.get("/login", (req, res) => {
   
   
   const user_id = req.session.user_id;
-  const templateVars = {"user_id": user_id, user: users[user_id]};
-  if (user_id) {
+  const user = users[user_id]
+  const templateVars = {"user_id": user_id, user: user};
+  if (user) {
     res.redirect("/urls");
   } else {
     res.render("login", templateVars);
@@ -128,8 +130,9 @@ app.post("/logout", (req, res) => {
 app.get("/register", (req, res) => {
   
   const user_id = req.session.user_id;
-  const templateVars = {"user_id": user_id, user: users[user_id]};
-  if(user_id) {
+  const user = users[user_id]
+  const templateVars = {"user_id": user_id, user: user};
+  if(user) {
     res.redirect("/urls");
   } else {
     res.render("register", templateVars);
@@ -163,12 +166,18 @@ app.get("/urls", (req, res) => {
   const user_id = req.session.user_id;
 
   const userURLs = checkURLByUser(user_id, urlDatabase);
+  const user = users[user_id]
+  console.log(user_id, userURLs, users[user_id])
   
-  const templateVars = { "user_id": user_id, user: users[user_id], userURLs: userURLs};
-  if (user_id) {
+  const templateVars = { "user_id": user_id, user: user, userURLs: userURLs};
+  
+  if (user) {
+    console.log("Hello")
     res.render("urls_index", templateVars);
   } else {
-    res.send("Please, login first")
+    // res.send("Please, login first")
+    // res.render("login", templateVars)
+    res.redirect("/login")
   }
 });
 app.get("/urls/new", (req, res) => {
@@ -206,11 +215,13 @@ app.get("/urls/:shortURL", (req, res) => {
         res.render("urls_show", templateVars);
         return;
       } else { 
-        res.redirect(403, "/login");
+        // res.redirect(403, "/login");
+        res.send("Sorry, you do not own this URL.")
         return;
       }
     } else {
-      res.redirect(403, "/login");
+      // res.redirect(403, "/login");
+      res.send("Sorry, you do not own this URL.")
       return;
     }
   }
