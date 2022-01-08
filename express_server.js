@@ -161,23 +161,15 @@ app.post("/register", (req, res) => {
 });
 // URLs
 app.get("/urls", (req, res) => {
-  
-  
   const user_id = req.session.user_id;
-
   const userURLs = checkURLByUser(user_id, urlDatabase);
-  const user = users[user_id]
-  console.log(user_id, userURLs, users[user_id])
-  
+  const user = users[user_id];
   const templateVars = { "user_id": user_id, user: user, userURLs: userURLs};
   
   if (user) {
-    console.log("Hello")
     res.render("urls_index", templateVars);
   } else {
-    // res.send("Please, login first")
-    // res.render("login", templateVars)
-    res.redirect("/login")
+    res.redirect("/login");
   }
 });
 app.get("/urls/new", (req, res) => {
@@ -266,8 +258,8 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   
 });
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(`http://${longURL["longURL"]}`);
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  res.redirect(longURL);
 });
 
 //deletes the url if the user is logged in and owns it
